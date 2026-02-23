@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name ="viewport" content = "width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "{% static 'style.css' %}">
+    <link
+        href ="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap"
+        rel = "stylesheet"
+    />
+    <style>
+        body {
+        background-image: url("{{ image_url }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    </style>
+    
+</head>
+<body style = "background-image: url('{{ image_url }}');">
+
+    <div class ="container">
+        <h1 class ="heading">Weather App</h1>
+
+        <form id="weatherForm" method = "POST">
+            {% csrf_token %}
+            <input type ="text" name = "city" placeholder ="Enter City" value ="{{weather.city}}">
+            <input type ="text" name = "country" placeholder ="Enter Country" value ="{{weather.country}}">
+            <button type = "submit" class ="btn">Search</button>
+            <a href = "{% url 'export_json' %}" target="_blank">
+                <button>Export Weather Data(JSON)</button>
+            </a>
+        </form>
+
+        {% if weather %}
+        <div class = "weather">
+            <div class = "left">
+                <h2 class ="temp">{{ weather.temp }}&#176; C</h2>
+                <h2 class = "city">{{ weather.city }}, {{ weather.country}}</h2>
+                <p> Humidity: {{ weather.humidity}}%</p>
+                <p>Wind: {{ weather.wind_speed }} m/s</p>
+            </div>
+            <div class = "right">
+                <div class ="icon">
+                    <p><img src = "http://openweathermap.org/img/w/{{ weather.icon }}.png" width = "120px"></p>
+                </div>
+                <div class ="condition">
+                    <p>{{ weather.description}}</p>
+                    <p>{{ weather.day}}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if weather.forecast %}
+        <div class = "forecast">
+            <h3>5-Day Forecast</h3>
+            <div class = "forecast-grid"> 
+                {% for item in weather.forecast %}
+                <div class "forecast-card">
+                    <p>{{ item.date|slice:":10"}}</p>
+                    <img src = "http://openweathermap.org/img/wn/{{ item.icon }}.png" alt ="icon">
+                    <p> {{ item.temp }}&#176; C</p>
+                    <p>{{ item.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if map_url %}
+        <iframe src = "{{ map_url }}" 
+                width = "100%"
+                height = "300"
+                style = "border:0;"
+                allowfullscreen>
+        </iframe>
+        {% endif %}
+    </div>
+
+    {% if exception_occured %}
+    <script>
+        window.onload = function() {
+            alert("City information is not available from the weather API");
+        }
+    </script>
+    {% endif %}
+   
+</body>
+</html>
