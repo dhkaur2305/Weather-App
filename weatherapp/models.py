@@ -6,6 +6,7 @@ class WeatherRecord(models.Model):
     country = models.CharField(max_length = 50, blank = True)
     date = models.DateField()
     temperature = models.FloatField()
+    temperature_api2 = models.FloatField(null = True, blank = True)
     humidity = models.FloatField()
     wind_speed = models.FloatField()
     description = models.CharField(max_length = 100)

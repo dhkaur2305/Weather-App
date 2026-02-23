@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Weather by Date Range</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h2,h3 {
+            text-align :center;
+            color: #2c3e50;
+        }
+
+        form{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"], input[type="date"]{
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button{
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        button:hover{
+            background-color: #2980b9;
+        }
+
+        ul{
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        ul li{
+            background-color: #f9e79f;
+            display: inline-blcok;
+            padding: 8px 12px;
+            marhin: 5px 0;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            boc-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td{
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th{
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:hover{
+            background-color: #f1f1f1;
+        }
+
+        a{
+            display: block;
+            text-align: center;
+            marhin-top: 20px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        a:hover{
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h2>Weather by Date Range</h2>
+
+    <form method = "POST" action = "{% url 'weather_by_date_range' %}">
+        {% csrf_token %}
+        <input type = "text" name = "location" placeholder ="Enter location" required>
+        <input type = "date" name ="start_date" required>
+        <input type = "date" name = "end_date" required>
+        <button type = "Submit"> Fetch Weather</button>
+    </form>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    {% if results %}
+        <h3>Weather for {{ location_name }}</h3>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Date</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Wind Speed (kph)</th>
+                <th>Description</th>
+            </tr>
+            {% for record in results %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.temperature }}</td>
+                <td>{{ record.humidity }}</td>
+                <td>{{ record.wind_speed }}</td>
+                <td>{{ record.description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <br>
+    <a href = "{% url 'home' %}">Back to Home</a>
+</body>
+</html>
